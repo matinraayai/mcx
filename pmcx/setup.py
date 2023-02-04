@@ -131,8 +131,9 @@ setup(
     download_url='http://mcx.space',
     keywords=['Monte Carlo simulation', 'Biophotonics', 'Ray-tracing', 'Rendering', 'GPU', 'Modeling',
                 'Biomedical Optics', 'Tissue Optics', 'Simulator', 'Optics'],
-    ext_modules=[CMakeExtension("pmcx", target="pmcx", source_dir="../src/")],
+    ext_modules=[CMakeExtension("pmcx._pmcx", target="_pmcx", source_dir="../src/")],
     cmdclass={"build_ext": CMakeBuild},
+    packages=['pmcx'],
     zip_safe=False,
     python_requires=">=3.6",
     classifiers=[
