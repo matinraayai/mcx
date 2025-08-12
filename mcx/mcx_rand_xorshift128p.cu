@@ -40,6 +40,7 @@
 #include <math.h>
 #include <float.h>
 #include <stdint.h>
+#include <curand_normal.h>
 
 #define MCX_RNG_NAME       "xorshift128+"
 

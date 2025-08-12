@@ -1198,6 +1198,15 @@ launchnewphoton(MCXpos *p, MCXdir *v, Stokes *s, MCXtime *f, float3 *rv,
                 float srcpattern[], int threadid, RandType rngseed[],
                 RandType seeddata[], float gdebugdata[],
                 volatile int gprogress[], float photontof[], MCXsp *nuvox) {
+  /// Sample a random normal unit direction d_i using box muller; the w
+  /// component is discarded
+  float2 d_i_xy =
+      _curand_box_muller(floor(rand_uniform01(t)), floor(rand_uniform01(t)));
+  float2 d_i_zw =
+      _curand_box_muller(floor(rand_uniform01(t)), floor(rand_uniform01(t)));
+  float4 d_i = {d_i_xy.x, d_i_xy.y, d_i_zw.x};
+  ///
+
   *w0 = 1.f;        //< reuse to count for launchattempt
   int canfocus = 1; //< non-zero: focusable, zero: not focusable
   MCXSrc *launchsrc = &(gcfg->src);
