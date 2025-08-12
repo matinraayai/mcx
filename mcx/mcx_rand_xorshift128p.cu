@@ -48,6 +48,30 @@
 
 typedef uint64_t  RandType;
 
+#define CURAND_2POW32_INV (2.3283064e-10f)
+#define CURAND_2POW32_INV_DOUBLE (2.3283064365386963e-10)
+#define CURAND_2POW32_INV_2PI (2.3283064e-10f * 6.2831855f)
+
+/// CURAND's box muller implementation
+__device__ inline float2 _curand_box_muller(unsigned int x, unsigned int y)
+{
+    float2 result;
+    float u = x * CURAND_2POW32_INV + (CURAND_2POW32_INV/2);
+    float v = y * CURAND_2POW32_INV_2PI + (CURAND_2POW32_INV_2PI/2);
+    float s;
+    NV_IF_ELSE_TARGET(NV_IS_DEVICE,
+        s = sqrtf(-2.0f * logf(u));
+        __sincosf(v, &result.x, &result.y);
+    ,
+        s = sqrtf(-2.0f * logf(u));
+        result.x = sinf(v);
+        result.y = cosf(v);
+    )
+        result.x *= s;
+    result.y *= s;
+    return result;
+}
+
 /**
  * @brief Change RNG state by one step and provide one random floating point value
  * We only use the 1st 32 random bits of the 64bit state for random number generation
